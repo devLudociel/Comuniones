@@ -1,0 +1,201 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const { pack } = Astro.props;
+const title = `${pack.name} | Comuniones personalizadas`;
+---
+
+<BaseLayout pageTitle={title} description={pack.tagline}>
+  <section class="hero pack-hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow reveal" style="--delay: 0.05s">Packs de comunión</p>
+        <h1 class="reveal" style="--delay: 0.1s">{pack.name}</h1>
+        <p class="lead reveal" style="--delay: 0.2s">{pack.tagline}</p>
+        <p class="meta reveal" style="--delay: 0.3s">{pack.heroNote}</p>
+        <div class="hero-actions reveal" style="--delay: 0.4s">
+          <a class="button primary" href={`/comuniones/solicitar?pack=${pack.slug}`}>
+            Solicitar este pack
+          </a>
+          <a
+            class="button ghost"
+            data-whatsapp
+            data-message={`Hola Ruben, me interesa el ${pack.name}. Quiero confirmar precio y disponibilidad.`}
+            href="#"
+          >
+            Consultar por WhatsApp
+          </a>
+        </div>
+      </div>
+      <div class="hero-panel reveal" style="--delay: 0.2s">
+        <div class="tag">Desde {pack.price} €</div>
+        <div>
+          <strong>{pack.summary}</strong>
+        </div>
+        <div class="meta">{pack.guests}</div>
+        <div class="meta">
+          {pack.priceNote
+            ? pack.priceNote
+            : "Precio referencial. Cambia por invitados, extras y urgencia."}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container info-grid">
+      <div class="card">
+        <h2>Qué incluye</h2>
+        <table class="table">
+          <tbody>
+            {pack.includes.map((item) => (
+              <tr>
+                <td>{item}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="note">
+          La cantidad de invitaciones y detalles siempre coincide.
+        </p>
+      </div>
+      <div class="card">
+        <h2>Ilustración personalizada incluida</h2>
+        <p>
+          Todos nuestros packs incluyen una ilustración personalizada del niño
+          o niña, creada a partir de una foto de referencia y adaptada a la
+          temática elegida. Esta ilustración se utiliza de forma coherente en
+          invitaciones, detalles y cartelería.
+        </p>
+        {pack.illustrationUsage ? (
+          <p class="meta">{pack.illustrationUsage}</p>
+        ) : null}
+        <p class="note">
+          La ilustración es una interpretación artística basada en la foto
+          enviada.
+        </p>
+        <a class="link" href="/comuniones/ilustracion-personalizada">
+          Ver detalles de la ilustración →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {pack.gallery && pack.gallery.length ? (
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Referencias del pack</h2>
+        <p class="section-subtitle">
+          Ejemplos referenciales de los productos incluidos en este pack.
+        </p>
+        <div class="media-grid" style="margin-top: 20px;">
+          {pack.gallery.map((item) => (
+            <figure class={`media-card ${item.src ? "media-card--clickable" : ""}`}>
+              <div class="media-frame">
+                {item.src ? (
+                  <img
+                    src={item.src}
+                    alt={item.label}
+                    loading="lazy"
+                    data-lightbox
+                    data-caption={item.label}
+                  />
+                ) : (
+                  <div class="media-placeholder">{item.label}</div>
+                )}
+              </div>
+              <figcaption class="media-caption">{item.label}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  ) : null}
+
+  {pack.processSteps || pack.productionTimeline || pack.importantNotes ? (
+    <section class="section">
+      <div class="container info-grid">
+        {pack.processSteps ? (
+          <div class="card">
+            <h2>Cómo funciona el proceso</h2>
+            <ol class="process-list">
+              {pack.processSteps.map((step) => (
+                <li>{step}</li>
+              ))}
+            </ol>
+          </div>
+        ) : null}
+        {pack.productionTimeline ? (
+          <div class="card">
+            <h2>Plazo de producción</h2>
+            <ul class="detail-list">
+              {pack.productionTimeline.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        {pack.importantNotes ? (
+          <div class="card">
+            <h2>Información importante</h2>
+            <ul class="detail-list">
+              {pack.importantNotes.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  ) : null}
+
+  <section class="section">
+    <div class="container info-grid">
+      <div class="card">
+        <h2>Qué puedes personalizar</h2>
+        <ul class="checklist">
+          {pack.canCustomize.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Lo que no incluye</h2>
+        <ul class="blocklist">
+          {pack.cannotCustomize.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Extras disponibles</h2>
+        <ul class="checklist">
+          {pack.extras.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container card">
+      <h2>¿Quieres este pack?</h2>
+      <p>
+        Cuéntanos la fecha, temática y número de invitados. Te respondemos con
+        propuesta y tiempos de entrega.
+      </p>
+      <a class="button primary" href={`/comuniones/solicitar?pack=${pack.slug}`}>
+        Quiero este pack
+      </a>
+      <a
+        class="button ghost"
+        data-whatsapp
+        data-message={`Hola Ruben, me interesa el ${pack.name}. Quiero confirmar precio y disponibilidad.`}
+        href="#"
+      >
+        Consultar por WhatsApp
+      </a>
+    </div>
+  </section>
+</BaseLayout>

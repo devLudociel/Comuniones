@@ -1,0 +1,514 @@
+---
+import { fileURLToPath } from "node:url";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { buildGalleryFromFolders } from "../../utils/gallery.js";
+
+const productosDir = fileURLToPath(
+  new URL("../../../public/images/productos", import.meta.url)
+);
+const huellasGallery = buildGalleryFromFolders(productosDir, ["Huellas"]);
+const figurasGallery = buildGalleryFromFolders(productosDir, ["Figuras"]);
+const firmasGallery = buildGalleryFromFolders(productosDir, ["Libro de firmas"]);
+
+const quantityOptions = Array.from({ length: 31 }, (_, index) => index);
+const extrasList = [
+  {
+    id: "arbol-huellas",
+    name: "Árbol de huellas A3 personalizado",
+    price: "+39 €",
+    description:
+      "Lámina A3 personalizada con diseño coordinado para que los invitados dejen su huella como recuerdo del día.",
+    included: [
+      "Incluido a elección en Pack Clásico",
+      "Incluido en Pack Premium Real",
+    ],
+    control: "checkbox",
+  },
+  {
+    id: "libro-firmas",
+    name: "Libro de firmas personalizado",
+    price: "+59 €",
+    description:
+      "Libro de firmas con portada personalizada y diseño a juego con el resto de la comunión.",
+    included: [
+      "Incluido a elección en Pack Clásico",
+      "Incluido en Pack Premium Real",
+    ],
+    control: "checkbox",
+  },
+  {
+    id: "figura-resina",
+    name: "Figura personalizada de resina",
+    price: "+89 €",
+    description:
+      "Figura personalizada del niño/a, realizada en resina a partir de la ilustración final.",
+    included: ["Incluida en Pack Premium Real"],
+    control: "checkbox",
+  },
+  {
+    id: "cartel-bienvenida",
+    name: "Cartel de bienvenida formato B1",
+    price: "+69 €",
+    description:
+      "Cartel de bienvenida en gran formato B1, ideal para la entrada o mesa principal.",
+    included: ["Incluido en Pack Premium Real"],
+    control: "checkbox",
+  },
+  {
+    id: "invitaciones-adicionales",
+    name: "Invitaciones adicionales",
+    price: "+2,90 € / unidad",
+    description:
+      "Invitaciones extra personalizadas para invitados adicionales.",
+    control: "select",
+  },
+  {
+    id: "detalles-adicionales",
+    name: "Detalles de madera adicionales",
+    price: "+6,90 € / unidad",
+    description:
+      "Recuerdos de madera personalizados adicionales para invitados extra.",
+    control: "select",
+  },
+  {
+    id: "pack-invitado",
+    name: "Pack invitado adicional",
+    price: "+9,50 € / unidad",
+    description: "Pack completo para invitados adicionales.",
+    control: "select",
+  },
+  {
+    id: "recuerdo-marco-estandar",
+    name: "Recuerdo marco personalizado – Formato estándar",
+    price: "+12,89 € / unidad",
+    description:
+      "Marco de madera cortado a láser, pintado con pintura profesional y personalizado con foto, nombre y fecha. Tamaño 15 × 12 cm.",
+    control: "select",
+  },
+  {
+    id: "recuerdo-marco-grande",
+    name: "Recuerdo marco personalizado – Formato grande",
+    price: "+14,95 € / unidad",
+    description:
+      "Mismo acabado y personalización en un formato más grande y vistoso. Tamaño 15 × 16 cm.",
+    control: "select",
+  },
+  {
+    id: "revision-extra",
+    name: "Revisión extra de ilustración",
+    price: "+15 €",
+    description:
+      "Revisión adicional del diseño o ilustración fuera de las incluidas en el pack.",
+    control: "checkbox",
+  },
+  {
+    id: "cambio-color",
+    name: "Cambio de color o estilo adicional",
+    price: "+10 €",
+    description:
+      "Ajustes extra de color o estilo sobre el diseño original.",
+    control: "checkbox",
+  },
+  {
+    id: "packaging-premium",
+    name: "Packaging premium individual",
+    price: "+1,50 € / unidad",
+    description:
+      "Presentación individual mejorada para cada recuerdo.",
+    included: ["Incluido en Pack Premium Real"],
+    control: "select",
+  },
+];
+---
+
+<BaseLayout pageTitle="Extras de Comunión" description="Extras personalizados para completar tu pack de comunión.">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow reveal" style="--delay: 0.05s">Extras de Comunión</p>
+        <h1 class="reveal" style="--delay: 0.1s">Personaliza tu pack a medida</h1>
+        <p class="lead reveal" style="--delay: 0.2s">
+          Incluye o amplía tu pack con extras personalizados para adaptar la
+          comunión exactamente a lo que necesitas.
+        </p>
+        <div class="hero-actions reveal" style="--delay: 0.3s">
+          <a class="button primary" href="/comuniones/solicitar">
+            Consultar extras
+          </a>
+        </div>
+      </div>
+      <div class="hero-panel reveal" style="--delay: 0.15s">
+        <div class="tag">Opcionales personalizables</div>
+        <p>
+          Puedes añadir extras a cualquier pack para hacerlo aún más especial.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section extras-list-section">
+    <div class="container">
+      <h2 class="section-title">Extras de Comunión</h2>
+      <p class="section-subtitle">
+        Los precios se muestran como incrementos (+) sobre el pack seleccionado.
+        Si un extra ya está incluido en tu pack, no se cobra nuevamente.
+      </p>
+      <form class="extras-list" aria-label="Selecciona extras">
+        {extrasList.map((extra) => (
+          <div
+            class="extra-option"
+            data-extra-id={extra.id}
+            data-extra-name={extra.name}
+            data-extra-price={extra.price}
+            data-extra-control={extra.control}
+          >
+            <div class="extra-option-header">
+              {extra.control === "checkbox" ? (
+                <input
+                  type="checkbox"
+                  id={`extra-${extra.id}`}
+                  name="extras"
+                  value={extra.id}
+                />
+              ) : (
+                <span class="extra-option-select-label">Cantidad</span>
+              )}
+              <div class="extra-option-title">
+                <label
+                  class="extra-option-label"
+                  for={extra.control === "checkbox" ? `extra-${extra.id}` : undefined}
+                >
+                  {extra.name}
+                </label>
+                <span class="extra-option-price">{extra.price}</span>
+              </div>
+              {extra.control === "select" ? (
+                <select
+                  name={`extra-${extra.id}-qty`}
+                  aria-label={`Cantidad para ${extra.name}`}
+                >
+                  {quantityOptions.map((value) => (
+                    <option value={value}>{value}</option>
+                  ))}
+                </select>
+              ) : null}
+            </div>
+            <p class="extra-option-desc">{extra.description}</p>
+            {extra.included && extra.included.length ? (
+              <div class="extra-option-tags">
+                {extra.included.map((note) => (
+                  <span class="extra-option-tag">{note}</span>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ))}
+      </form>
+      <p class="note extras-note">
+        Todos los extras pueden añadirse a cualquier pack, salvo que ya estén
+        incluidos en el tuyo. El extra no elegido puede contratarse como adicional.
+        Tu selección se guarda para enviarla por WhatsApp.
+      </p>
+    </div>
+  </section>
+
+  <section class="section extras-section">
+    <div class="container">
+      <h2 class="section-title">Muestras y referencias</h2>
+      <p class="section-subtitle">
+        Algunos ejemplos visuales de los extras más solicitados.
+      </p>
+      <div class="extras-grid">
+        <div class="extras-tabs" role="tablist" aria-label="Extras">
+          <button
+            class="extra-tab is-active"
+            id="tab-arbol-huellas"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="arbol-huellas"
+            data-extra-target="arbol-huellas"
+          >
+            <span class="extra-title">Árbol de huellas A3</span>
+            <span class="extra-badge">A3</span>
+          </button>
+          <button
+            class="extra-tab"
+            id="tab-figuras-resina"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="figuras-resina"
+            data-extra-target="figuras-resina"
+          >
+            <span class="extra-title">Figura personalizada de resina</span>
+            <span class="extra-badge">Hecha a mano</span>
+          </button>
+          <button
+            class="extra-tab"
+            id="tab-libro-firmas"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="libro-firmas"
+            data-extra-target="libro-firmas"
+          >
+            <span class="extra-title">Libro de firmas personalizado</span>
+            <span class="extra-badge">A4 / A5</span>
+          </button>
+        </div>
+        <div class="extras-panels">
+          <section
+            class="extra-card extra-panel is-active"
+            id="arbol-huellas"
+            role="tabpanel"
+            aria-labelledby="tab-arbol-huellas"
+            data-extra-panel
+          >
+            <div class="extra-body">
+              <p class="extra-desc">
+                Un recuerdo participativo para que los invitados dejen su huella en
+                un diseño personalizado.
+              </p>
+              <div class="media-grid">
+                {huellasGallery.map((item) => (
+                  <figure class={`media-card ${item.src ? "media-card--clickable" : ""}`}>
+                    <div class="media-frame">
+                      {item.src ? (
+                        <img
+                          src={item.src}
+                          alt={item.label}
+                          loading="lazy"
+                          data-lightbox
+                          data-caption={item.label}
+                        />
+                      ) : (
+                        <div class="media-placeholder">{item.label}</div>
+                      )}
+                    </div>
+                    <figcaption class="media-caption">{item.label}</figcaption>
+                  </figure>
+                ))}
+              </div>
+              <a class="button ghost" href="/comuniones/solicitar">
+                Consultar árbol de huellas
+              </a>
+            </div>
+          </section>
+
+          <section
+            class="extra-card extra-panel"
+            id="figuras-resina"
+            role="tabpanel"
+            aria-labelledby="tab-figuras-resina"
+            data-extra-panel
+            hidden
+          >
+            <div class="extra-body">
+              <p class="extra-desc">
+                Figura chibi realista basada en la ilustración final. Pintada a mano y
+                con packaging incluido.
+              </p>
+              <div class="media-grid">
+                {figurasGallery.map((item) => (
+                  <figure class={`media-card ${item.src ? "media-card--clickable" : ""}`}>
+                    <div class="media-frame">
+                      {item.src ? (
+                        <img
+                          src={item.src}
+                          alt={item.label}
+                          loading="lazy"
+                          data-lightbox
+                          data-caption={item.label}
+                        />
+                      ) : (
+                        <div class="media-placeholder">{item.label}</div>
+                      )}
+                    </div>
+                    <figcaption class="media-caption">{item.label}</figcaption>
+                  </figure>
+                ))}
+              </div>
+              <div class="chips">
+                <span class="chip">Estilo ilustración</span>
+                <span class="chip">Chibi</span>
+                <span class="chip">Pop</span>
+              </div>
+              <a class="button ghost" href="/comuniones/solicitar">
+                Consultar figura de resina
+              </a>
+            </div>
+          </section>
+
+          <section
+            class="extra-card extra-panel"
+            id="libro-firmas"
+            role="tabpanel"
+            aria-labelledby="tab-libro-firmas"
+            data-extra-panel
+            hidden
+          >
+            <div class="extra-body">
+              <p class="extra-desc">
+                Un libro a juego con la papelería para mensajes y dedicatorias. Portada
+                personalizada con nombre y fecha.
+              </p>
+              <div class="media-grid">
+                {firmasGallery.map((item) => (
+                  <figure class={`media-card ${item.src ? "media-card--clickable" : ""}`}>
+                    <div class="media-frame">
+                      {item.src ? (
+                        <img
+                          src={item.src}
+                          alt={item.label}
+                          loading="lazy"
+                          data-lightbox
+                          data-caption={item.label}
+                        />
+                      ) : (
+                        <div class="media-placeholder">{item.label}</div>
+                      )}
+                    </div>
+                    <figcaption class="media-caption">{item.label}</figcaption>
+                  </figure>
+                ))}
+              </div>
+              <div class="chips">
+                <span class="chip">A4</span>
+                <span class="chip">A5</span>
+              </div>
+              <a class="button ghost" href="/comuniones/solicitar">
+                Consultar libro de firmas
+              </a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    const tabs = Array.from(document.querySelectorAll("[data-extra-target]"));
+    const panels = Array.from(document.querySelectorAll("[data-extra-panel]"));
+
+    const setActive = (id, shouldScroll = false) => {
+      let matched = false;
+      tabs.forEach((tab) => {
+        const isActive = tab.dataset.extraTarget === id;
+        tab.classList.toggle("is-active", isActive);
+        tab.setAttribute("aria-selected", isActive ? "true" : "false");
+        if (isActive) {
+          matched = true;
+        }
+      });
+      panels.forEach((panel) => {
+        const isActive = panel.id === id;
+        panel.classList.toggle("is-active", isActive);
+        panel.hidden = !isActive;
+        if (isActive && shouldScroll) {
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+      return matched;
+    };
+
+    const activateFromHash = (shouldScroll = false) => {
+      const hash = window.location.hash.replace("#", "");
+      if (hash && setActive(hash, shouldScroll)) {
+        return;
+      }
+      if (panels[0]) {
+        setActive(panels[0].id, false);
+      }
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const id = tab.dataset.extraTarget;
+        setActive(id, true);
+        if (history.replaceState) {
+          history.replaceState(null, "", `#${id}`);
+        } else {
+          window.location.hash = id;
+        }
+      });
+    });
+
+    activateFromHash(false);
+    window.addEventListener("hashchange", () => activateFromHash(true));
+
+    const STORAGE_KEY = "comunion-extras";
+    const extrasForm = document.querySelector(".extras-list");
+    const extraOptions = Array.from(document.querySelectorAll(".extra-option"));
+
+    const loadExtras = () => {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed.items) ? parsed.items : [];
+      } catch (error) {
+        console.warn("No se pudieron cargar los extras guardados.", error);
+        return [];
+      }
+    };
+
+    const applyExtras = (items) => {
+      const map = new Map(items.map((item) => [item.id, item]));
+      extraOptions.forEach((option) => {
+        const id = option.dataset.extraId;
+        const control = option.dataset.extraControl;
+        const saved = map.get(id);
+        if (!saved) return;
+        if (control === "checkbox") {
+          const input = option.querySelector('input[type="checkbox"]');
+          if (input) {
+            input.checked = true;
+          }
+        } else if (control === "select") {
+          const select = option.querySelector("select");
+          if (select && saved.quantity) {
+            select.value = String(saved.quantity);
+          }
+        }
+      });
+    };
+
+    const saveExtras = () => {
+      const items = [];
+      extraOptions.forEach((option) => {
+        const id = option.dataset.extraId;
+        const name = option.dataset.extraName;
+        const price = option.dataset.extraPrice;
+        const control = option.dataset.extraControl;
+        if (control === "checkbox") {
+          const input = option.querySelector('input[type="checkbox"]');
+          if (input && input.checked) {
+            items.push({ id, name, price, quantity: 1 });
+          }
+          return;
+        }
+        const select = option.querySelector("select");
+        const quantity = select ? Number(select.value) : 0;
+        if (quantity > 0) {
+          items.push({ id, name, price, quantity });
+        }
+      });
+      try {
+        window.localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ items, updatedAt: new Date().toISOString() })
+        );
+      } catch (error) {
+        console.warn("No se pudieron guardar los extras.", error);
+      }
+    };
+
+    if (extrasForm && extraOptions.length) {
+      applyExtras(loadExtras());
+      extrasForm.addEventListener("input", saveExtras);
+      extrasForm.addEventListener("change", saveExtras);
+      saveExtras();
+    }
+  </script>
+</BaseLayout>

@@ -1,0 +1,317 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const seo = {
+  title: "Ilustración personalizada para comuniones",
+  description:
+    "Todos los packs incluyen ilustración personalizada del niño o niña basada en una foto. Proceso claro, límites definidos y coherencia en todo el pack.",
+  canonical: "/comuniones/ilustracion-personalizada",
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "¿La ilustración está incluida en todos los packs?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Sí. Todos nuestros packs de comunión incluyen una ilustración personalizada del niño o niña basada en una foto.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Es un retrato realista?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No. La ilustración es una interpretación artística en un estilo dulce y coherente con nuestras temáticas.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Qué foto debo enviar?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Una foto clara, con buena luz, de frente o 3/4, donde se vea bien la cara. Evita filtros y fotos borrosas.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Puedo pedir que copiéis un diseño externo?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Trabajamos con diseños propios para mantener coherencia y calidad. Podemos inspirarnos en colores y estilo, pero no copiamos diseños de terceros.",
+      },
+    },
+  ],
+};
+
+const steps = [
+  "Elige tu pack y temática.",
+  "Envíanos una foto clara.",
+  "Boceto + revisión incluida antes de producir.",
+];
+
+const recommendedPhoto = [
+  "Buena luz (ventana o exterior suave).",
+  "Sin filtros ni efectos.",
+  "Cara visible y enfocada (frente o 3/4).",
+  "Fondo simple, mejor.",
+  "Si usa gafas habitualmente, con gafas.",
+];
+
+const avoidPhoto = [
+  "Fotos borrosas o con poca luz.",
+  "Sombras fuertes en la cara.",
+  "Filtros o maquillaje digital.",
+  "Gorras, mascarillas o elementos tapando el rostro.",
+  "Capturas de pantalla con baja calidad.",
+];
+---
+
+<BaseLayout pageTitle={seo.title} description={seo.description} canonical={seo.canonical}>
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(faqJsonLd)}
+  />
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow reveal" style="--delay: 0.05s">Ilustración incluida</p>
+        <h1 class="reveal" style="--delay: 0.1s">
+          Ilustración personalizada para comuniones
+        </h1>
+        <p class="lead reveal" style="--delay: 0.2s">
+          Creamos una ilustración del niño o niña basada en una foto, en estilo
+          dulce y elegante, y la aplicamos en invitaciones, detalles, cartelería
+          y papelería de mesa.
+        </p>
+        <div class="hero-actions reveal" style="--delay: 0.3s">
+          <a class="button primary" href="/comuniones#packs">Ver packs</a>
+          <a class="button ghost" href="/comuniones/solicitar">Solicitar mi pack</a>
+        </div>
+      </div>
+      <div class="hero-panel reveal" style="--delay: 0.15s">
+        <div class="tag">Estilo único</div>
+        <p>
+          Ilustración estilizada y coherente para que todo el pack vaya a juego.
+        </p>
+        <p class="note">
+          La ilustración es una interpretación artística basada en la foto
+          enviada.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid cols-3">
+      <div class="card">
+        <h2>A partir de tu foto</h2>
+        <p class="meta">
+          Nos envías una foto clara y creamos la ilustración para tu comunión.
+        </p>
+      </div>
+      <div class="card">
+        <h2>Todo a juego</h2>
+        <p class="meta">
+          Misma estética en invitaciones, detalles, pegatinas y cartelería.
+        </p>
+      </div>
+      <div class="card">
+        <h2>Sin líos</h2>
+        <p class="meta">
+          Packs cerrados y revisiones limitadas para cumplir plazos.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Cómo funciona</h2>
+      <div class="steps" style="margin-top: 20px;">
+        {steps.map((step, index) => (
+          <div class="step">
+            <span>{index + 1}</span>
+            <strong>{step}</strong>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Requisitos de la foto</h2>
+      <p class="section-subtitle">
+        Para que la ilustración quede perfecta necesitamos una imagen nítida y
+        bien iluminada.
+      </p>
+      <div class="info-grid" style="margin-top: 20px;">
+        <div class="card">
+          <h3>Recomendado</h3>
+          <ul class="checklist">
+            {recommendedPhoto.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Evitar</h3>
+          <ul class="blocklist">
+            {avoidPhoto.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container info-grid">
+      <div class="card">
+        <h2>Qué incluye</h2>
+        <ul class="checklist">
+          <li>Rasgos generales (pelo, tono, gafas si las lleva).</li>
+          <li>Traje de comunión estándar.</li>
+          <li>Color de ojos aproximado.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Qué no incluye</h2>
+        <ul class="blocklist">
+          <li>No es un retrato realista.</li>
+          <li>No buscamos que se parezca exactamente.</li>
+          <li>No copiamos ilustraciones de Pinterest.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Por qué no es un retrato</h2>
+        <p>
+          Mantener un estilo coherente nos permite garantizar calidad, rapidez y
+          estética uniforme en todo el catálogo.
+        </p>
+        <p class="note">
+          La ilustración es una interpretación artística basada en la foto
+          enviada.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Ejemplos visuales</h2>
+      <p class="section-subtitle">
+        Así se aplica la ilustración en distintos soportes.
+      </p>
+      <div class="media-grid" style="margin-top: 20px;">
+        {[
+          "Invitación",
+          "Detalle madera",
+          "Cartel A3",
+          "Pegatinas",
+        ].map((label) => (
+          <figure class="media-card">
+            <div class="media-frame">
+              <div class="media-placeholder">{label}</div>
+            </div>
+            <figcaption class="media-caption">{label}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Antes y después</h2>
+      <p class="section-subtitle">
+        Comparativa de la foto de referencia y el resultado final.
+      </p>
+      <div class="media-grid" style="margin-top: 20px;">
+        <figure class="media-card">
+          <div class="media-frame">
+            <div class="media-placeholder">Foto de referencia</div>
+          </div>
+          <figcaption class="media-caption">Foto original</figcaption>
+        </figure>
+        <figure class="media-card">
+          <div class="media-frame">
+            <div class="media-placeholder">Ilustración final</div>
+          </div>
+          <figcaption class="media-caption">Ilustración personalizada</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Revisiones incluidas</h2>
+      <div class="grid cols-3" style="margin-top: 20px;">
+        <div class="card">
+          <h3>Pack Básico</h3>
+          <p class="meta">1 revisión de ilustración.</p>
+        </div>
+        <div class="card">
+          <h3>Pack Clásico</h3>
+          <p class="meta">1 revisión de ilustración + 1 revisión gráfica.</p>
+        </div>
+        <div class="card">
+          <h3>Pack Premium</h3>
+          <p class="meta">2 revisiones de ilustración.</p>
+        </div>
+      </div>
+      <p class="meta" style="margin-top: 12px;">
+        Revisiones extra disponibles bajo presupuesto. Tras la aprobación no se
+        admiten cambios.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container card">
+      <h2>Preguntas frecuentes</h2>
+      <div class="grid" style="margin-top: 16px;">
+        <div>
+          <strong>¿La ilustración está incluida en todos los packs?</strong>
+          <p class="meta">
+            Sí, siempre va incluida y se aplica a todo el pack.
+          </p>
+        </div>
+        <div>
+          <strong>¿Es un retrato realista?</strong>
+          <p class="meta">
+            No, es una interpretación artística coherente con nuestras temáticas.
+          </p>
+        </div>
+        <div>
+          <strong>¿Qué foto debo enviar?</strong>
+          <p class="meta">
+            Una foto clara, bien iluminada y sin filtros, de frente o 3/4.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container card">
+      <h2>¿Listos para empezar?</h2>
+      <p>
+        Elige tu pack y envíanos la foto. Te preparamos el diseño a juego con
+        todo el catálogo.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="/comuniones#packs">Ver packs</a>
+        <a class="button ghost" href="/comuniones/solicitar">Solicitar mi pack</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

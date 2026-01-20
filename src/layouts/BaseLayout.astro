@@ -1,0 +1,206 @@
+---
+import "../styles/global.css";
+
+const {
+  pageTitle = "Comuniones personalizadas",
+  description =
+    "Catálogo de packs de comunión personalizados con invitaciones, detalles y cartelería.",
+  canonical,
+} = Astro.props;
+
+const canonicalUrl = canonical
+  ? canonical.startsWith("http")
+    ? canonical
+    : Astro.site
+      ? new URL(canonical, Astro.site).toString()
+      : null
+  : null;
+
+const navLinks = [
+  { href: "/comuniones", label: "Comuniones" },
+  { href: "/comuniones#packs", label: "Packs" },
+  { href: "/comuniones/invitaciones", label: "Invitaciones" },
+  { href: "/comuniones/detalles-madera", label: "Detalles en madera" },
+  { href: "/comuniones/carteles-a3", label: "Carteles A3" },
+  { href: "/comuniones/papeleria-mesa", label: "Papelería de mesa" },
+  { href: "/comuniones/cajas-packaging", label: "Cajas & packaging" },
+  { href: "/comuniones/figuras", label: "Figuras en resina" },
+  { href: "/comuniones/extras", label: "Extras de Comunión" },
+  { href: "/comuniones/como-funciona", label: "Cómo funciona" },
+  { href: "/comuniones/solicitar", label: "Contacto" },
+];
+
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    {canonicalUrl ? <link rel="canonical" href={canonicalUrl} /> : null}
+    <slot name="head" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Manrope:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-bar">
+        <a class="brand" href="/comuniones">Comuniones con cariño</a>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-label="Abrir menú"
+          aria-controls="site-nav"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
+        <nav class="nav-links" id="site-nav" aria-label="Navegación principal">
+          {navLinks.map((link) => (
+            <a href={link.href}>{link.label}</a>
+          ))}
+          <a class="nav-cta" href="/comuniones/solicitar">Solicitar pack</a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="site-note">
+      <div class="container site-note__content">
+        <p>
+          Las imágenes son referenciales. Mantenemos packs, cantidades y lo que se
+          ofrece, pero adaptamos modelos, colores y detalles a tu gusto.
+        </p>
+        <a
+          class="site-note__link"
+          data-whatsapp
+          data-message="Hola Ruben, quiero adaptar un pack de comunion a mi gusto. Podemos conversar ideas?"
+          href="#"
+        >
+          Conversemos por WhatsApp →
+        </a>
+      </div>
+    </section>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>
+          Packs de comunión personalizados hechos a medida. Te acompañamos en la
+          elección de temática, modelos y cantidades.
+        </p>
+        <p>Escríbenos para reservar fecha o pedir un presupuesto.</p>
+      </div>
+    </footer>
+
+    <a
+      class="whatsapp-fab"
+      data-whatsapp
+      data-message="Hola Ruben, creador de soluciones personalizadas de Imprime Arte, me gustaria informacion sobre los packs de comunion."
+      href="#"
+      target="_blank"
+      rel="noopener"
+      aria-label="Abrir WhatsApp"
+    >
+      WhatsApp
+    </a>
+
+    <dialog class="lightbox" id="lightbox">
+      <button class="lightbox-close" type="button" data-lightbox-close>
+        ×
+      </button>
+      <img id="lightbox-image" alt="" />
+      <p class="lightbox-caption" id="lightbox-caption"></p>
+    </dialog>
+
+    <script is:inline>
+      const whatsappNumber = "34643037152";
+      const defaultMessage =
+        "Hola Ruben, creador de soluciones personalizadas de Imprime Arte, me gustaria informacion sobre los packs de comunion.";
+
+      document.querySelectorAll("[data-whatsapp]").forEach((link) => {
+        const message = link.dataset.message || defaultMessage;
+        link.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+          message
+        )}`;
+      });
+
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImage = document.getElementById("lightbox-image");
+      const lightboxCaption = document.getElementById("lightbox-caption");
+      const closeLightbox = () => {
+        if (!lightbox) return;
+        if (typeof lightbox.close === "function") {
+          lightbox.close();
+        }
+        lightbox.removeAttribute("open");
+      };
+
+      if (lightbox && lightboxImage) {
+        document.querySelectorAll("[data-lightbox]").forEach((element) => {
+          element.addEventListener("click", () => {
+            const source = element.dataset.full || element.getAttribute("src");
+            if (!source) return;
+            lightboxImage.src = source;
+            lightboxImage.alt = element.getAttribute("alt") || "";
+            if (lightboxCaption) {
+              const caption =
+                element.dataset.caption || element.getAttribute("alt") || "";
+              lightboxCaption.textContent = caption;
+            }
+            if (lightbox.showModal) {
+              lightbox.showModal();
+            } else {
+              lightbox.setAttribute("open", "");
+            }
+          });
+        });
+      }
+
+      const closeButton = lightbox
+        ? lightbox.querySelector("[data-lightbox-close]")
+        : null;
+      if (closeButton) {
+        closeButton.addEventListener("click", closeLightbox);
+      }
+      if (lightbox) {
+        lightbox.addEventListener("click", (event) => {
+          if (event.target === lightbox) {
+            closeLightbox();
+          }
+        });
+      }
+
+      const menuToggle = document.querySelector(".menu-toggle");
+      const nav = document.getElementById("site-nav");
+      const closeMenu = () => {
+        if (nav) {
+          nav.classList.remove("open");
+        }
+        if (menuToggle) {
+          menuToggle.setAttribute("aria-expanded", "false");
+        }
+      };
+
+      if (menuToggle && nav) {
+        menuToggle.addEventListener("click", () => {
+          const isOpen = nav.classList.toggle("open");
+          menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+
+        nav.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", closeMenu);
+        });
+      }
+    </script>
+  </body>
+</html>

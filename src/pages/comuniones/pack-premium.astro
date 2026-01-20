@@ -1,0 +1,37 @@
+---
+import { fileURLToPath } from "node:url";
+import PackTemplate from "../../components/PackTemplate.astro";
+import { packs } from "../../data/packs.js";
+import {
+  buildGalleryFromFolders,
+  listProductFolders,
+  sampleGalleryFromGroups,
+} from "../../utils/gallery.js";
+
+const pack = packs.find((item) => item.slug === "pack-premium");
+const productosDir = fileURLToPath(
+  new URL("../../../public/images/productos", import.meta.url)
+);
+const invitationDirs = listProductFolders(productosDir, "invitacion");
+const gallery = sampleGalleryFromGroups(
+  [
+    {
+      items: buildGalleryFromFolders(productosDir, invitationDirs),
+      count: 1,
+    },
+    { items: buildGalleryFromFolders(productosDir, ["Detalles"]), count: 1 },
+    { items: buildGalleryFromFolders(productosDir, ["CartelesA3"]), count: 1 },
+    { items: buildGalleryFromFolders(productosDir, ["papeleria"]), count: 1 },
+    { items: buildGalleryFromFolders(productosDir, ["Cajas"]), count: 1 },
+    { items: buildGalleryFromFolders(productosDir, ["Huellas"]), count: 1 },
+    { items: buildGalleryFromFolders(productosDir, ["Figuras"]), count: 1 },
+    { items: buildGalleryFromFolders(productosDir, ["Libro de firmas"]), count: 1 },
+  ],
+  8
+);
+const packWithGallery = pack
+  ? { ...pack, gallery }
+  : { gallery };
+---
+
+<PackTemplate pack={packWithGallery} />

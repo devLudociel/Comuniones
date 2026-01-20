@@ -1,0 +1,403 @@
+---
+import { fileURLToPath } from "node:url";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { packs } from "../../data/packs.js";
+import { productos } from "../../data/productos.js";
+import { tematicas } from "../../data/tematicas.js";
+import {
+  buildGalleryFromFolders,
+  listProductFolders,
+  pickRandomItems,
+} from "../../utils/gallery.js";
+
+const steps = [
+  "Elige tu pack",
+  "Elige modelos y temática",
+  "Nosotros lo hacemos por ti",
+];
+
+const galleryFilters = [
+  { id: "todo", label: "Todo" },
+  { id: "invitaciones", label: "Invitaciones" },
+  { id: "detalles", label: "Detalles" },
+  { id: "carteles", label: "Carteles" },
+  { id: "papeleria", label: "Papelería" },
+  { id: "packaging", label: "Packaging" },
+];
+
+const productosDir = fileURLToPath(
+  new URL("../../../public/images/productos", import.meta.url)
+);
+const invitationDirs = listProductFolders(productosDir, "invitacion");
+
+const pickAtLeast = (items, count) => {
+  if (!items.length) return [];
+  if (items.length >= count) return pickRandomItems(items, count);
+  const result = [];
+  while (result.length < count) {
+    const remaining = count - result.length;
+    result.push(...pickRandomItems(items, Math.min(remaining, items.length)));
+  }
+  return result;
+};
+
+const galleryGroups = [
+  {
+    category: "invitaciones",
+    items: buildGalleryFromFolders(productosDir, invitationDirs),
+  },
+  {
+    category: "detalles",
+    items: buildGalleryFromFolders(productosDir, ["Detalles"]),
+  },
+  {
+    category: "carteles",
+    items: buildGalleryFromFolders(productosDir, ["CartelesA3"]),
+  },
+  {
+    category: "papeleria",
+    items: buildGalleryFromFolders(productosDir, ["papeleria"]),
+  },
+  {
+    category: "packaging",
+    items: buildGalleryFromFolders(productosDir, ["Cajas"]),
+  },
+];
+
+const galleryItems = galleryGroups.flatMap((group) =>
+  pickAtLeast(group.items, 6).map((item) => ({
+    ...item,
+    category: group.category,
+  }))
+);
+---
+
+<BaseLayout
+  pageTitle="Comuniones personalizadas hechas con cariño"
+  description="Invitaciones, detalles en madera, cartelería y recuerdos únicos para comuniones personalizadas."
+>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow reveal" style="--delay: 0.05s">Catálogo de comuniones</p>
+        <h1 class="reveal" style="--delay: 0.1s">
+          Comuniones personalizadas hechas con cariño
+        </h1>
+        <p class="lead reveal" style="--delay: 0.2s">
+          Invitaciones, detalles en madera, cartelería y recuerdos únicos con
+          ilustración personalizada incluida.
+        </p>
+        <div class="hero-actions reveal" style="--delay: 0.3s">
+          <a class="button primary" href="/comuniones#packs">
+            Ver packs de comunión
+          </a>
+          <a class="button ghost" href="/comuniones/solicitar">
+            Solicitar información
+          </a>
+        </div>
+      </div>
+      <div class="hero-panel reveal" style="--delay: 0.15s">
+        <div class="hero-image-grid">
+          <img
+            class="hero-image"
+            src="/images/hero/hero.png"
+            alt="Ejemplo de invitaciones y detalles"
+            loading="eager"
+          />
+          <img
+            class="hero-image"
+            src="/images/hero/hero%202.png"
+            alt="Ejemplo de papelería y detalles"
+            loading="eager"
+          />
+        </div>
+        <div class="tag">Ilustración personalizada incluida</div>
+        <h3>Todo coordinado en una sola decisión.</h3>
+        <p>
+          Te guiamos en temática, modelos y cantidades para que disfrutes del
+          proceso sin complicaciones.
+        </p>
+        <div class="chips">
+          <span class="chip">Invitaciones</span>
+          <span class="chip">Detalles madera</span>
+          <span class="chip">Cartelería</span>
+          <span class="chip">Packaging</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Cómo funciona</h2>
+      <p class="section-subtitle">
+        Te lo ponemos fácil en 3 pasos claros. Menos dudas, más ilusión.
+      </p>
+      <div class="steps" style="margin-top: 20px;">
+        {steps.map((step, index) => (
+          <div class="step">
+            <span>{index + 1}</span>
+            <strong>{step}</strong>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container card">
+      <h2>Ilustración incluida en todos los packs</h2>
+      <p>
+        Creamos una ilustración personalizada del niño o niña a partir de una
+        foto. Se aplica de forma coherente en invitaciones, detalles y
+        cartelería.
+      </p>
+      <a class="link" href="/comuniones/ilustracion-personalizada">
+        Conoce el proceso →
+      </a>
+    </div>
+  </section>
+
+  <section class="section" id="packs">
+    <div class="container">
+      <h2 class="section-title">Packs de comunión</h2>
+      <p class="section-subtitle">
+        Tres niveles pensados para distintos tamaños de celebración y estilos.
+      </p>
+      <div class="grid cols-3" style="margin-top: 24px;">
+        {packs.map((pack) => (
+          <article class="card">
+            <h3>{pack.name}</h3>
+            <p class="price">Desde {pack.price} €</p>
+            <p class="meta">{pack.summary}</p>
+            <p class="meta">{pack.guests}</p>
+            <p class="meta">
+              {pack.priceNote
+                ? pack.priceNote
+                : "Precio referencial. Cambia por invitados, extras y urgencia."}
+            </p>
+            <a class="link" href={`/comuniones/${pack.slug}`}>Ver pack →</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container info-grid">
+      <div class="card">
+        <h2>Plazos estimados</h2>
+        <table class="table">
+          <tbody>
+            <tr>
+              <td>Elección de pack y briefing</td>
+              <td>1-2 días</td>
+            </tr>
+            <tr>
+              <td>Propuesta visual</td>
+              <td>3-5 días</td>
+            </tr>
+            <tr>
+              <td>Revisión y ajustes</td>
+              <td>2-3 días</td>
+            </tr>
+            <tr>
+              <td>Producción y preparación</td>
+              <td>7-12 días</td>
+            </tr>
+            <tr>
+              <td>Entrega o recogida</td>
+              <td>24-72 h</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="note">
+          Los tiempos pueden variar según temporada y cantidad de extras.
+        </p>
+      </div>
+      <div class="card faq">
+        <h2>FAQ rápida</h2>
+        <details>
+          <summary>¿Qué necesitas para empezar?</summary>
+          <p>
+            Tu fecha, número de invitados, temática preferida y una foto del
+            niño o niña.
+          </p>
+        </details>
+        <details>
+          <summary>¿Cuántas revisiones incluye?</summary>
+          <p>
+            Cada pack incluye revisiones indicadas en su descripción. Extras se
+            pueden añadir si lo necesitas.
+          </p>
+        </details>
+        <details>
+          <summary>¿Puedo cambiar la temática o los colores?</summary>
+          <p>
+            Sí, adaptamos la temática y la paleta a tu gusto manteniendo la
+            coherencia del pack.
+          </p>
+        </details>
+        <details>
+          <summary>¿Cómo se realiza el pago?</summary>
+          <p>
+            Te indicamos el método al confirmar la propuesta final por WhatsApp.
+          </p>
+        </details>
+        <details>
+          <summary>¿Hacen envíos?</summary>
+          <p>
+            Sí, enviamos a toda España con embalaje seguro y seguimiento.
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Confianza y detalle artesanal</h2>
+      <p class="section-subtitle">
+        Cuidamos cada pieza para que todo llegue impecable y coordinado.
+      </p>
+      <div class="grid cols-3" style="margin-top: 24px;">
+        <article class="card">
+          <h3>Hecho a medida</h3>
+          <p class="meta">
+            Adaptamos modelos, colores y textos a tu estilo para que todo combine.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Materiales premium</h3>
+          <p class="meta">
+            Papel, madera y acabados de calidad para un resultado elegante.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Atención directa</h3>
+          <p class="meta">
+            Te acompañamos por WhatsApp en cada paso, con respuestas rápidas.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Productos incluidos</h2>
+      <p class="section-subtitle">
+        No se venden sueltos, pero puedes ver modelos y estilos disponibles.
+      </p>
+      <div class="grid cols-3" style="margin-top: 24px;">
+        {productos.map((producto) => (
+          <article class="card">
+            <h3>{producto.name}</h3>
+            <p class="meta">{producto.tagline}</p>
+            <a class="link" href={`/comuniones/${producto.slug}`}>Ver detalles →</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="galeria">
+    <div class="container">
+      <h2 class="section-title">Galería de inspiración</h2>
+      <p class="section-subtitle">
+        Filtra por categoría para visualizar ejemplos rápidos.
+      </p>
+      <div class="filter-bar">
+        {galleryFilters.map((filter, index) => (
+          <button
+            type="button"
+            class={`filter-button ${index === 0 ? "active" : ""}`}
+            data-filter={filter.id}
+            aria-pressed={index === 0 ? "true" : "false"}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+      <div class="media-grid" data-filter-grid>
+        {galleryItems.map((item) => (
+          <figure class="media-card" data-filter-item data-category={item.category}>
+            <div class="media-frame">
+              {item.src ? (
+                <img
+                  src={item.src}
+                  alt={item.label}
+                  loading="lazy"
+                  data-lightbox
+                  data-caption={item.label}
+                />
+              ) : (
+                <div class="media-placeholder">{item.label}</div>
+              )}
+            </div>
+            <figcaption class="media-caption">{item.label}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Temáticas que inspiran</h2>
+      <p class="section-subtitle">
+        Paletas pensadas para que todo combine a la perfección.
+      </p>
+      <div class="grid cols-3" style="margin-top: 24px;">
+        {tematicas.map((tema) => (
+          <article class="card">
+            <h3>{tema.name}</h3>
+            <div class="palette" style="margin: 12px 0;">
+              {tema.palette.map((color) => (
+                <span style={`background:${color}`}></span>
+              ))}
+            </div>
+            <p class="meta">{tema.examples.join(" · ")}</p>
+            <a class="link" href="/comuniones/tematicas">Ver temáticas →</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container card">
+      <h2>¿Lista para empezar?</h2>
+      <p>
+        Cuéntanos la fecha y el número aproximado de invitados. Te ayudamos a
+        elegir el pack perfecto.
+      </p>
+      <a class="button primary" href="/comuniones/solicitar">Solicitar pack</a>
+    </div>
+  </section>
+
+  <script is:inline>
+    const filterButtons = document.querySelectorAll("[data-filter]");
+    const filterItems = document.querySelectorAll("[data-filter-item]");
+
+    const setFilter = (filter) => {
+      filterButtons.forEach((button) => {
+        const isActive = button.dataset.filter === filter;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+
+      filterItems.forEach((item) => {
+        const category = item.dataset.category;
+        item.hidden = filter !== "todo" && category !== filter;
+      });
+    };
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => setFilter(button.dataset.filter));
+    });
+
+    setFilter("todo");
+
+  </script>
+</BaseLayout>

@@ -1,0 +1,81 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const { product } = Astro.props;
+const title = `${product.name} | Comuniones personalizadas`;
+const galleryItems =
+  product.gallery && product.gallery.length
+    ? product.gallery
+    : product.models.map((model) => ({ label: model }));
+---
+
+<BaseLayout pageTitle={title} description={product.tagline}>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow reveal" style="--delay: 0.05s">Producto incluido en packs</p>
+        <h1 class="reveal" style="--delay: 0.1s">{product.name}</h1>
+        <p class="lead reveal" style="--delay: 0.2s">{product.tagline}</p>
+        <p class="meta reveal" style="--delay: 0.3s">{product.description}</p>
+        <div class="hero-actions reveal" style="--delay: 0.4s">
+          <a class="button primary" href="/comuniones/solicitar">Quiero este pack</a>
+          <a class="button ghost" href="/comuniones#packs">Ver packs</a>
+        </div>
+      </div>
+      <div class="hero-panel reveal" style="--delay: 0.2s">
+        <div class="tag">Incluido en packs</div>
+        <p>
+          Este producto no se vende suelto. Está disponible dentro de nuestros
+          packs personalizados.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Galería de ejemplos</h2>
+      <div class="media-grid" style="margin-top: 20px;">
+        {galleryItems.map((item) => (
+          <figure class={`media-card ${item.src ? "media-card--clickable" : ""}`}>
+            <div class="media-frame">
+              {item.src ? (
+                <img
+                  src={item.src}
+                  alt={item.label}
+                  loading="lazy"
+                  data-lightbox
+                  data-caption={item.label}
+                />
+              ) : (
+                <div class="media-placeholder">{item.label}</div>
+              )}
+            </div>
+            <figcaption class="media-caption">{item.label}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container info-grid">
+      <div class="card">
+        <h2>Modelos disponibles</h2>
+        <div class="chips">
+          {product.models.map((model) => (
+            <span class="chip">{model}</span>
+          ))}
+        </div>
+      </div>
+      <div class="card">
+        <h2>Detalles incluidos</h2>
+        <ul class="checklist">
+          {product.features.map((feature) => (
+            <li>{feature}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,32 @@
+---
+import { fileURLToPath } from "node:url";
+import PackTemplate from "../../components/PackTemplate.astro";
+import { packs } from "../../data/packs.js";
+import {
+  buildGalleryFromFolders,
+  listProductFolders,
+  sampleGalleryFromGroups,
+} from "../../utils/gallery.js";
+
+const pack = packs.find((item) => item.slug === "pack-basico");
+const productosDir = fileURLToPath(
+  new URL("../../../public/images/productos", import.meta.url)
+);
+const invitationDirs = listProductFolders(productosDir, "invitacion");
+const gallery = sampleGalleryFromGroups(
+  [
+    {
+      items: buildGalleryFromFolders(productosDir, invitationDirs),
+      count: 2,
+    },
+    { items: buildGalleryFromFolders(productosDir, ["Detalles"]), count: 2 },
+    { items: buildGalleryFromFolders(productosDir, ["Cajas"]), count: 2 },
+  ],
+  6
+);
+const packWithGallery = pack
+  ? { ...pack, gallery }
+  : { gallery };
+---
+
+<PackTemplate pack={packWithGallery} />

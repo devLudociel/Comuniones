@@ -1,0 +1,285 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout pageTitle="Solicitar pack" description="Formulario de contacto para packs de comunión personalizados.">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow reveal" style="--delay: 0.05s">Contacto</p>
+        <h1 class="reveal" style="--delay: 0.1s">Solicitar pack de comunión</h1>
+        <p class="lead reveal" style="--delay: 0.2s">
+          Cuéntanos lo básico y te preparamos una propuesta personalizada.
+        </p>
+      </div>
+      <div class="hero-panel reveal" style="--delay: 0.15s">
+        <div class="tag">Atención personalizada</div>
+        <p>
+          El pedido no se paga sin hablar contigo. Respondemos en 24-48h.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <form class="form" id="solicitud-form">
+        <div class="form-section">
+          <h2>Datos básicos</h2>
+          <p class="form-help">
+            Lo esencial para poder responderte rápido. Tardarás menos de 1 minuto.
+          </p>
+          <div class="form-grid">
+            <div>
+              <label for="nombre">Nombre</label>
+              <input
+                id="nombre"
+                name="nombre"
+                type="text"
+                placeholder="Tu nombre"
+                autocomplete="name"
+                required
+              />
+            </div>
+            <div>
+              <label for="whatsapp">WhatsApp</label>
+              <input
+                id="whatsapp"
+                name="whatsapp"
+                type="tel"
+                placeholder="+34 600 000 000"
+                autocomplete="tel"
+                inputmode="tel"
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <label for="email">Email (opcional)</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="tucorreo@email.com"
+              autocomplete="email"
+            />
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2>Tu pack</h2>
+          <p class="form-help">
+            Si no sabes cuál elegir, déjalo en "No lo sé aún" y te aconsejamos.
+          </p>
+          <div>
+            <label for="pack">Pack elegido</label>
+            <select id="pack" name="pack">
+              <option value="sin-pack">No lo sé aún</option>
+              <option value="pack-basico">Pack Comunión Básico Personalizado</option>
+              <option value="pack-clasico">Pack Comunión Clásico Personalizado</option>
+              <option value="pack-premium">Pack Comunión Premium Real Personalizado</option>
+            </select>
+          </div>
+          <p class="form-help" id="pack-price-hint">
+            Precios finales: Básico 119 €, Clásico 249 €, Premium Real 449 €.
+          </p>
+        </div>
+
+        <div class="form-section">
+          <h2>Detalles del evento</h2>
+          <div class="form-grid">
+            <div>
+              <label for="fecha">Fecha de la comunión</label>
+              <input id="fecha" name="fecha" type="date" />
+            </div>
+            <div>
+              <label for="invitados">Invitados aproximados</label>
+              <input id="invitados" name="invitados" type="number" min="1" />
+            </div>
+          </div>
+          <div>
+            <label for="tematica">Temática preferida</label>
+            <input
+              id="tematica"
+              name="tematica"
+              type="text"
+              placeholder="Olivo, marinero, rosa empolvado..."
+            />
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2>Ideas o comentarios</h2>
+          <label for="comentarios">Cuéntanos lo que tienes en mente</label>
+          <textarea
+            id="comentarios"
+            name="comentarios"
+            rows="4"
+            placeholder="Colores favoritos, estilo de invitación, extras..."
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="button primary" type="submit">Abrir WhatsApp</button>
+          <p class="meta">
+            Al enviar, hablarás con Ruben, creador de soluciones personalizadas
+            de Imprime Arte.
+          </p>
+        </div>
+
+        <div class="form-preview">
+          <strong>Mensaje que se enviará</strong>
+          <pre id="mensaje-previo"></pre>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script is:inline>
+    const whatsappNumber = "34643037152";
+    const packLabels = {
+      "pack-basico": "Pack Comunión Básico Personalizado",
+      "pack-clasico": "Pack Comunión Clásico Personalizado",
+      "pack-premium": "Pack Comunión Premium Real Personalizado",
+    };
+    const packPrices = {
+      "pack-basico": "119",
+      "pack-clasico": "249",
+      "pack-premium": "449",
+    };
+    const extrasKey = "comunion-extras";
+    const extrasIncludedByPack = {
+      "pack-basico": [],
+      "pack-clasico": ["arbol-huellas", "libro-firmas"],
+      "pack-premium": [
+        "arbol-huellas",
+        "libro-firmas",
+        "figura-resina",
+        "cartel-bienvenida",
+        "packaging-premium",
+      ],
+    };
+
+    const form = document.getElementById("solicitud-form");
+    const packSelect = document.getElementById("pack");
+    const preview = document.getElementById("mensaje-previo");
+    const packPriceHint = document.getElementById("pack-price-hint");
+    const params = new URLSearchParams(window.location.search);
+    const packParam = params.get("pack");
+
+    const loadExtras = () => {
+      try {
+        const raw = window.localStorage.getItem(extrasKey);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed.items) ? parsed.items : [];
+      } catch (error) {
+        console.warn("No se pudieron cargar los extras guardados.", error);
+        return [];
+      }
+    };
+
+    if (packParam && packSelect) {
+      packSelect.value = packParam;
+    }
+
+    const buildMessage = () => {
+      const name = document.getElementById("nombre")?.value?.trim();
+      const whatsapp = document.getElementById("whatsapp")?.value?.trim();
+      const email = document.getElementById("email")?.value?.trim();
+      const packValue = packSelect ? packSelect.value : "";
+      const packLabel = packValue ? packLabels[packValue] || packValue : "";
+      const date = document.getElementById("fecha")?.value?.trim();
+      const guests = document.getElementById("invitados")?.value?.trim();
+      const theme = document.getElementById("tematica")?.value?.trim();
+      const notes = document.getElementById("comentarios")?.value?.trim();
+      const storedExtras = loadExtras();
+
+      const lines = [
+        "Hola Ruben, creador de soluciones personalizadas de Imprime Arte.",
+        "Quiero informacion sobre los packs de comunion.",
+      ];
+
+      if (name) lines.push(`Nombre: ${name}`);
+      if (whatsapp) lines.push(`WhatsApp: ${whatsapp}`);
+      if (email) lines.push(`Email: ${email}`);
+      if (packLabel && packValue !== "sin-pack") {
+        lines.push(`Pack elegido: ${packLabel}`);
+      } else {
+        lines.push("Pack elegido: Por decidir");
+      }
+      if (date) lines.push(`Fecha comunion: ${date}`);
+      if (guests) lines.push(`Invitados aprox: ${guests}`);
+      if (theme) lines.push(`Tematica: ${theme}`);
+      if (notes) lines.push(`Comentarios: ${notes}`);
+      if (storedExtras.length) {
+        lines.push("Extras seleccionados:");
+        storedExtras.forEach((extra) => {
+          const quantity = extra.quantity && extra.quantity > 1;
+          const qtyLabel = quantity ? ` x${extra.quantity}` : "";
+          const included = extrasIncludedByPack[packValue] || [];
+          const isIncluded =
+            packValue && included.includes(extra.id);
+          const includedLabel = isIncluded ? " (incluido en pack)" : "";
+          lines.push(`- ${extra.name}${qtyLabel} (${extra.price})${includedLabel}`);
+        });
+        if (packValue === "pack-clasico") {
+          const classicChoice = storedExtras.filter((extra) =>
+            ["arbol-huellas", "libro-firmas"].includes(extra.id)
+          );
+          if (classicChoice.length > 1) {
+            lines.push(
+              "Pack Clásico incluye solo una opción entre Árbol de huellas o Libro de firmas."
+            );
+          }
+        }
+      }
+
+      return lines.join("\\n");
+    };
+
+    const updatePreview = () => {
+      if (!preview) return;
+      preview.textContent = buildMessage();
+    };
+
+    const updatePriceHint = () => {
+      if (!packPriceHint || !packSelect) return;
+      const value = packSelect.value;
+      if (!value || value === "sin-pack") {
+        packPriceHint.textContent =
+          "Precios finales: Básico 119 €, Clásico 249 €, Premium Real 449 €.";
+        return;
+      }
+      const price = packPrices[value];
+      packPriceHint.textContent = price
+        ? `Precio final: ${price} €.`
+        : "Precio sujeto a cantidades y extras.";
+    };
+
+    if (form) {
+      form.addEventListener("input", updatePreview);
+      form.addEventListener("change", () => {
+        updatePriceHint();
+        updatePreview();
+      });
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const message = buildMessage();
+        const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+          message
+        )}`;
+        window.open(url, "_blank", "noopener");
+      });
+    }
+
+    updatePreview();
+    updatePriceHint();
+
+    window.addEventListener("storage", (event) => {
+      if (event.key === extrasKey) {
+        updatePreview();
+      }
+    });
+  </script>
+</BaseLayout>

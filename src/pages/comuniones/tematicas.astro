@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { tematicas } from "../../data/tematicas.js";
+---
+
+<BaseLayout pageTitle="Temáticas de comunión" description="Paletas y estilos para comuniones personalizadas.">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow reveal" style="--delay: 0.05s">Temáticas</p>
+        <h1 class="reveal" style="--delay: 0.1s">Elige la temática perfecta</h1>
+        <p class="lead reveal" style="--delay: 0.2s">
+          Paletas y estilos pensados para coordinar invitaciones, detalles y
+          cartelería.
+        </p>
+        <div class="hero-actions reveal" style="--delay: 0.3s">
+          <a class="button primary" href="/comuniones/solicitar">Quiero esta temática</a>
+        </div>
+      </div>
+      <div class="hero-panel reveal" style="--delay: 0.2s">
+        <div class="tag">Inspiración</div>
+        <p>
+          Cada temática incluye ejemplos aplicados en invitaciones, detalles y
+          carteles para que visualices el resultado final.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid cols-3">
+      {tematicas.map((tema) => (
+        <article class="card">
+          <h3>{tema.name}</h3>
+          <div class="palette" style="margin: 12px 0;">
+            {tema.palette.map((color) => (
+              <span style={`background:${color}`}></span>
+            ))}
+          </div>
+          <p class="meta">{tema.examples.join(" · ")}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
