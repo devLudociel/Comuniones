@@ -1,11 +1,11 @@
 ---
-import { fileURLToPath } from "node:url";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { packs } from "../../data/packs.js";
 import { productos } from "../../data/productos.js";
 import { tematicas } from "../../data/tematicas.js";
 import {
   buildGalleryFromFolders,
+  getProductosDir,
   listProductFolders,
   pickRandomItems,
 } from "../../utils/gallery.js";
@@ -25,9 +25,7 @@ const galleryFilters = [
   { id: "packaging", label: "Packaging" },
 ];
 
-const productosDir = fileURLToPath(
-  new URL("../../../public/images/productos", import.meta.url)
-);
+const productosDir = getProductosDir();
 const invitationDirs = listProductFolders(productosDir, "invitacion");
 
 const pickAtLeast = (items, count) => {

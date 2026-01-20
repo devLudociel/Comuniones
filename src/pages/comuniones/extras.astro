@@ -1,11 +1,8 @@
 ---
-import { fileURLToPath } from "node:url";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { buildGalleryFromFolders } from "../../utils/gallery.js";
+import { buildGalleryFromFolders, getProductosDir } from "../../utils/gallery.js";
 
-const productosDir = fileURLToPath(
-  new URL("../../../public/images/productos", import.meta.url)
-);
+const productosDir = getProductosDir();
 const huellasGallery = buildGalleryFromFolders(productosDir, ["Huellas"]);
 const figurasGallery = buildGalleryFromFolders(productosDir, ["Figuras"]);
 const firmasGallery = buildGalleryFromFolders(productosDir, ["Libro de firmas"]);

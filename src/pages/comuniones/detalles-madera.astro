@@ -1,13 +1,10 @@
 ---
-import { fileURLToPath } from "node:url";
 import ProductTemplate from "../../components/ProductTemplate.astro";
 import { productos } from "../../data/productos.js";
-import { buildGalleryFromFolders } from "../../utils/gallery.js";
+import { buildGalleryFromFolders, getProductosDir } from "../../utils/gallery.js";
 
 const product = productos.find((item) => item.slug === "detalles-madera");
-const productosDir = fileURLToPath(
-  new URL("../../../public/images/productos", import.meta.url)
-);
+const productosDir = getProductosDir();
 const gallery = buildGalleryFromFolders(productosDir, ["Detalles"]);
 const productWithGallery = product
   ? { ...product, gallery }

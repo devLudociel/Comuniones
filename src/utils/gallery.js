@@ -1,9 +1,13 @@
-import { readdirSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { extname, join, relative } from "node:path";
 
 const imageExtensions = new Set([".png", ".jpg", ".jpeg", ".webp", ".avif"]);
 
+export const getProductosDir = () =>
+  join(process.cwd(), "public", "images", "productos");
+
 const collectImages = (dir) => {
+  if (!existsSync(dir)) return [];
   const entries = readdirSync(dir, { withFileTypes: true });
   const files = [];
 
@@ -54,6 +58,7 @@ export const buildGalleryFromFolders = (baseDir, folders) => {
 };
 
 export const listProductFolders = (baseDir, matchText) => {
+  if (!existsSync(baseDir)) return [];
   return readdirSync(baseDir, { withFileTypes: true })
     .filter(
       (entry) =>
